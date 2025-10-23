@@ -1,0 +1,14 @@
+{
+  "$schema": "https://www.schemastore.org/package",
+  "name": "demo",
+  "private": true,
+  "type": "module",
+  "version": "0.0.0",
+  "devDependencies": {
+    "@ianvs/prettier-plugin-sort-imports": "*",
+    "prettier": "*",
+    "tslib": "*",
+    "typescript": "*",
+    "vite": "*"
+  }
+}

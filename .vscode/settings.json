@@ -1,0 +1,10 @@
+{
+  "[javascript][typescript][javascriptreact][typescriptreact][html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.maxTokenizationLineLength": 2500
+  },
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
+  "prettier.enable": true,
+  "prettier.requireConfig": true
+}
