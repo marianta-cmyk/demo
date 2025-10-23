@@ -16,8 +16,8 @@
     // Stricter Typechecking Options
     "noUncheckedIndexedAccess": true,
     "noUncheckedSideEffectImports": true,
-    "outDir": "lib",
-    "rootDir": "src",
+    "outDir": "./lib",
+    "rootDir": "./src",
     "skipLibCheck": true,
     // For nodejs:
     // "lib": ["esnext"],
