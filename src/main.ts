@@ -1,3 +1,4 @@
+import { useAnimationFrame } from './use-animation-frame.js';
 import { useResizeObserver } from './use-resize-observer.js';
 
 function createDiv(id: string): HTMLDivElement {
@@ -57,22 +58,22 @@ function createRenderer(context: CanvasRenderingContext2D) {
 		circle,
 	};
 }
-function draw(context: CanvasRenderingContext2D) {
-	const renderer = createRenderer(context);
-	renderer.line({
+let lines = [
+	{
 		p1: { x: 50, y: 50 },
 		p2: { x: 200, y: 200 },
 		width: 2,
 		colour: 'blue',
-	});
-	renderer.circle({
-		center: { x: 50, y: 50 },
+	},
+	{
+		p1: { x: 100, y: 100 },
+		p2: { x: 200, y: 200 },
 		width: 2,
-		radius: 10,
-		colour: 'red',
-	});
-}
+		colour: 'blue',
+	},
+];
 function application() {
+	let redraw = false;
 	const root = createDiv('root');
 	const canvas = createCanvas('canvas');
 	root.appendChild(canvas);
@@ -90,10 +91,45 @@ function application() {
 			canvas.width = size.width;
 			canvas.height = size.height;
 			console.log('Canvas resized', size);
-			draw(context);
+			redraw = true;
 		}
 	});
 	observer.observe(canvas);
-	draw(context);
+	function draw(context: CanvasRenderingContext2D, delta: number) {
+		const renderer = createRenderer(context);
+		context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+		lines = lines.map((item) => {
+			return {
+				...item,
+				p1: {
+					x: Math.random() < 0.5 ? item.p1.x + delta : item.p1.x - delta,
+					y: Math.random() < 0.5 ? item.p1.y + delta : item.p1.y - delta,
+				},
+				p2: {
+					x: Math.random() < 0.5 ? item.p2.x + delta : item.p2.x - delta,
+					y: Math.random() < 0.5 ? item.p2.y + delta : item.p2.y - delta,
+				},
+				colour: Math.random() < 0.5 ? 'red' : 'green',
+			};
+		});
+		for (const line of lines) {
+			renderer.line(line);
+		}
+		renderer.circle({
+			center: { x: 50, y: 50 },
+			width: 2,
+			radius: 10,
+			colour: 'red',
+		});
+	}
+	const animation = useAnimationFrame((delta) => {
+		redraw = true;
+		if (redraw) {
+			console.log('redraw');
+			draw(context, delta);
+			redraw = false;
+		}
+	});
+	animation.start();
 }
 document.addEventListener('DOMContentLoaded', application);
