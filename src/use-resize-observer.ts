@@ -72,3 +72,5 @@ export function useResizeObserver(
 		observe,
 		unobserve,
 		disconnect,
+	};
+}
