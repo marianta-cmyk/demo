@@ -25,4 +25,4 @@ function randomChoiceWithoutReplacement(list: string[]): [string, string] {
 const fruits = ['μήλο', 'μπανάνα', 'πορτοκάλι', 'αχλάδι', 'κεράσι'];
 const result = randomChoiceWithoutReplacement(fruits);
 
-console.log('Τυχαία επιλεγμένα στοιχεία χωρίς replacement:', result);
+console.log('Τυχαία επιλεγμένα στοιχεία χωρίς replacement:', result
