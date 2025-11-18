@@ -1,22 +1,39 @@
-function randomChoiceWithReplacement(list: string[]): string[] {
+function randomChoiceWithReplacement(list) {
 	if (list.length === 0) {
-		throw new Error('Η λίστα δεν πρέπει να είναι άδεια.');
+		console.log('Η λίστα πρέπει να έχει περιεχόμενο.');
 	}
 
-	function getRandomItem(): string {
-		const index = Math.floor(Math.random() * list.length);
-		const item = list[index];
-		if (item === undefined) {
-			throw new Error('Προβλημα με τον τυχαίο δείκτη');
-		}
-		return item;
-	}
+	const getRandomElement = () => list[Math.floor(Math.random() * list.length)];
 
-	const firstItem = getRandomItem();
-	const secondItem = getRandomItem();
+	const first = getRandomElement();
+	const second = getRandomElement();
 
-	return [firstItem, secondItem];
+	return [first, second];
 }
 
-const fruits = ['μήλο', 'μπανάνα', 'πορτοκάλι', 'αχλάδι', 'κεράσι'];
-console.log('Τυχαία επιλεγμένα στοιχεία:', randomChoiceWithReplacement(fruits));
+// Παράδειγμα
+const myList = ['μήλο', 'μπανάνα', 'πορτοκάλι', 'αχλάδι', 'κεράσι'];
+const result = randomChoiceWithReplacement(myList);
+
+console.log('Τυχαία επιλογή:', result);
+
+//2nd
+
+// function randomChoiceWithReplacement(list: string[]): string[] {
+//	if (list.length === 0) {
+//		console.log('Η λίστα δεν πρέπει να είναι άδεια.');
+//	}
+//
+//	function getRandomItem(): string {
+//		const randomIndex = Math.floor(Math.random() * list.length);
+//		return list[randomIndex]!;
+//	}
+//
+//	const firstItem = getRandomItem();
+//	const secondItem = getRandomItem();
+//
+//	return [firstItem, secondItem];
+//}
+
+//const fruits = ['μήλο', 'μπανάνα', 'πορτοκάλι', 'αχλάδι', 'κεράσι'];
+//console.log('Τυχαία επιλoγή', randomChoiceWithReplacement(fruits));

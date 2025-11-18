@@ -1,31 +1,25 @@
-function generateRandomStringNoReplacement(
-	length: number,
-	chars: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
-): string {
-	const availableChars = chars.split('');
+const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+const availableChars = chars.split('');
 
-	if (length > availableChars.length) {
-		throw new Error(
-			'Το μήκος είναι μεγαλύτερο από τον αριθμό διαθέσιμων χαρακτήρων.',
-		);
+const randomArray: string[] = [];
+
+// Θέλουμε string μήκους 6
+const stringLength = 6;
+
+// Επιλέγουμε 6 χαρακτήρες χωρίς να επαναληφθούν
+for (let i = 0; i < stringLength; i++) {
+	const randomIndex = Math.floor(Math.random() * availableChars.length);
+	const randomChar = availableChars[randomIndex];
+
+	// Προσθέτουμε τον χαρακτήρα στο αποτέλεσμα
+	if (randomChar) {
+		randomArray.push(randomChar);
+		availableChars.splice(randomIndex, 1); // αφαιρούμε τον χαρακτήρα για να μην ξαναεμφανιστεί
 	}
-
-	const resultArray: string[] = [];
-
-	for (let i = 0; i < length; i++) {
-		const randomIndex = Math.floor(Math.random() * availableChars.length);
-		const char = availableChars[randomIndex];
-
-		if (char === undefined) {
-			throw new Error('Κάτι πήγε στραβά με τον τυχαίο δείκτη!');
-		}
-
-		resultArray.push(char);
-		availableChars.splice(randomIndex, 1);
-	}
-
-	return resultArray.join('');
 }
 
-const randomString6 = generateRandomStringNoReplacement(6);
-console.log('Τυχαίο string 6 χαρακτήρων χωρίς replacement:', randomString6);
+// Ενώνουμε τους χαρακτήρες σε string
+const randomString = randomArray.join('');
+
+// Εμφανίζουμε το αποτέλεσμα
+console.log('Τυχαίο string 6 χαρακτήρων χωρίς replacement:', randomString);
