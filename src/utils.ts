@@ -1,3 +1,8 @@
+export function assert<Value>(value: Value, message: string): asserts value {
+	if (!value) {
+		throw new Error(message);
+	}
+}
 export function memoizeDomain<Args extends unknown[], Value>(
 	fn: (...args: Args) => Value,
 ) {

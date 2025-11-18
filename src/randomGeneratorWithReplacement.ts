@@ -8,14 +8,39 @@ for (let i = 0; i < stringLength; i++) {
 	const randomIndex = Math.floor(Math.random() * inputs.length);
 	const randomInput = inputs[randomIndex];
 	if (randomInput === undefined) {
-		console.log('Κάτι πήγε στραβά!');
+		throw new Error("'Κάτι πήγε στραβά!'");
 	}
-
 	randomArray.push(randomInput);
 }
 
 const randomString = randomArray.join('');
 console.log('Τυχαίο string 6 χαρακτήρων:', randomString);
+
+const characters = {
+	uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+	lowercase: 'abcdefghijklmnopqrstuvwxyz',
+	digits: '01234567890',
+	symbols: '!@#$%^*',
+} as const;
+
+type Characters = typeof characters;
+
+type WithCharacters = {
+	[K in keyof Characters]: boolean;
+};
+
+function randomString(params: { replacement: boolean } & WithCharacters) {
+	return (length: number): string => {
+		//TODO;
+	};
+}
+randomString({
+	replacement: true,
+	digits: false,
+	lowercase: true,
+	uppercase: true,
+	symbols: false,
+});
 
 //2nd
 /* function generateRandomString(chars: string[], length: number): string {
