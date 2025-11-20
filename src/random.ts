@@ -4,18 +4,23 @@ const rng = Math.random;
 
 export function range(n: number): number[] {
 	const items: number[] = [];
-	for (let i = 0; i < n; i ++) {
+	for (let i = 0; i < n; i++) {
 		items.push(i);
 	}
 	return items;
 }
-
-export function random(params: { minimum: number; maximum: number }) {
-	return rng() * (params.maximum - params.minimum) + params.minimum;
+export function random(params: {
+	integer: boolean;
+	minimum: number;
+	maximum: number;
+}) {
+	const n = rng() * (params.maximum - params.minimum) + params.minimum;
+	return params.integer ? Math.round(n) : n;
 }
 export const uniqueRandom = memoizeRange(random);
 function octal() {
 	return random({
+		integer: true,
 		minimum: 0,
 		maximum: 255,
 	});

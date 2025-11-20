@@ -34,3 +34,8 @@ export function memoizeRange<
 		}
 	};
 }
+
+export function listToMapByKey<Item>(toKey: (item: Item) => string) {
+	return (items: Item[]): Map<string, Item> =>
+		items.reduce((map, item) => map.set(toKey(item), item), new Map());
+}

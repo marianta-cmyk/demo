@@ -33,6 +33,7 @@ function stringIndices(params: { replacement: boolean }) {
 
 		return range(n).map(() =>
 			generator({
+        integer: true,
 				minimum: 0,
 				maximum: items.length,
 			}),
