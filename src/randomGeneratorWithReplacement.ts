@@ -1,3 +1,4 @@
+import { randomIndices } from './random-choice.js';
 import { random, range, uniqueRandom } from './random.js';
 import { assert } from './utils.js';
 
@@ -40,27 +41,39 @@ function stringIndices(params: { replacement: boolean }) {
 }
 
 function randomString(params: { replacement: boolean } & WithCharacters) {
+	// const pool: string = '';
+	// if (params.digits) {
+	// 	// pool += characters.digits;
+	// 	pool.concat(characters.digits);
+	// }
+	// if (params.lowercase) {
+	// 	pool.concat(characters.lowercase);
+	// }
+	// if (params.uppercase) {
+	// 	pool.concat(characters.uppercase);
+	// }
+	// if (params.symbols) {
+	// 	pool.concat(characters.symbols);
+	// }
+	// let pool = '';
+	// for (const key in characters) {
+	// 	if (params[key]) {
+	// 		pool += characters[key as keyof Characters];
+	// 	}
+	// }
+	const pool = Object.keys(characters)
+		.filter((item) => params[item as keyof Characters])
+		.reduce((s, item) => s + characters[item as keyof Characters], '');
+	const gen = randomIndices({
+		replacement: params.replacement,
+	});
+	const items = [...pool];
 	return (length: number): string => {
-		//TODO;
-
-		let pool = '';
-		for (const key in characters) {
-			if (params[key as keyof Characters]) {
-				pool += characters[key as keyof Characters];
-			}
-		}
-
-		// Μετατρέπουμε σε array
-		const items = [...pool];
-
-		// Παίρνουμε indices
-		const indices = indicesGenerator(items, length);
-
-		// Επιστρέφουμε χαρακτήρες
+		const indices = gen(items, length);
 		return items.filter((_, i) => indices.includes(i)).join('');
 	};
 }
-const makeString = randomString({
+const mypasswordgenerator = randomString({
 	replacement: true,
 	uppercase: true,
 	lowercase: true,
@@ -68,4 +81,4 @@ const makeString = randomString({
 	symbols: false,
 });
 
-console.log(makeString(12));
+console.log(mypasswordgenerator(12));
