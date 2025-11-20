@@ -1,20 +1,5 @@
-const inputs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-const randomArray: string[] = [];
-
-const stringLength = 6;
-
-for (let i = 0; i < stringLength; i++) {
-	const randomIndex = Math.floor(Math.random() * inputs.length);
-	const randomInput = inputs[randomIndex];
-	if (randomInput === undefined) {
-		throw new Error("'Κάτι πήγε στραβά!'");
-	}
-	randomArray.push(randomInput);
-}
-
-const randomString = randomArray.join('');
-console.log('Τυχαίο string 6 χαρακτήρων:', randomString);
+import { random, range, uniqueRandom } from './random.js';
+import { assert } from './utils.js';
 
 const characters = {
 	uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
@@ -29,61 +14,58 @@ type WithCharacters = {
 	[K in keyof Characters]: boolean;
 };
 
+function stringIndices(params: { replacement: boolean }) {
+	const generator = params.replacement ? random : uniqueRandom;
+
+	return (items: string[], n: number): number[] => {
+		assert(
+			items.length > 0,
+			'Πρέπει να επιλέξεις τουλάχιστον έναν τύπο χαρακτήρων.',
+		);
+
+		if (!params.replacement) {
+			assert(
+				n <= items.length,
+				`Πρέπει να έχεις τουλάχιστον ${n} μοναδικούς χαρακτήρες.`,
+			);
+		}
+
+		return range(n).map(() =>
+			generator({
+				minimum: 0,
+				maximum: items.length,
+			}),
+		);
+	};
+}
+
 function randomString(params: { replacement: boolean } & WithCharacters) {
 	return (length: number): string => {
 		//TODO;
+
+		let pool = '';
+		for (const key in characters) {
+			if (params[key as keyof Characters]) {
+				pool += characters[key as keyof Characters];
+			}
+		}
+
+		// Μετατρέπουμε σε array
+		const items = [...pool];
+
+		// Παίρνουμε indices
+		const indices = indicesGenerator(items, length);
+
+		// Επιστρέφουμε χαρακτήρες
+		return items.filter((_, i) => indices.includes(i)).join('');
 	};
 }
-randomString({
+const makeString = randomString({
 	replacement: true,
-	digits: false,
-	lowercase: true,
 	uppercase: true,
+	lowercase: true,
+	digits: false,
 	symbols: false,
 });
 
-//2nd
-/* function generateRandomString(chars: string[], length: number): string {
-  if (chars.length === 0) {
-    console.log("Η λίστα χαρακτήρων δεν πρέπει να είναι άδεια.");
-  }
-  if (length <= 0) {
-    console.log("Το μήκος πρέπει να είναι μεγαλύτερο από 0.");
-  }
-
-  let result = "";
-
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * chars.length);
-    result += chars[randomIndex]; // κάθε χαρακτήρας επιλέγεται με replacement
-  }
-
-  return result;
-}
-
-// Παράδειγμα
-const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".split("");
-const randomString = generateRandomString(characters, 10);
-
-console.log("Τυχαίο string:", randomString);
-*/
-
-/*
-function generateRandomString6(): string {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-  let result = "";
-
-  for (let i = 0; i < 6; i++) {
-    const randomIndex = Math.floor(Math.random() * chars.length);
-
-    result += chars[randomIndex];
-  }
-
-  return result;
-}
-
-// Παράδειγμα
-const randomString = generateRandomString6();
-console.log("Τυχαίο string 6 χαρακτήρων:", randomString);
-*/
+console.log(makeString(12));
