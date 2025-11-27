@@ -133,3 +133,97 @@ function application() {
 	animation.start();
 }
 document.addEventListener('DOMContentLoaded', application);
+
+// ----------------------
+// Main Shape class
+class Shape {
+	constructor(colour = 'black', width = 2) {
+		this.colour = colour;
+		this.width = width;
+	}
+
+	draw(ctx) {}
+}
+
+class Line extends Shape {
+	constructor(colour = 'black', width = 2, x1, y1, x2, y2) {
+		super(colour, width);
+		this.x1 = x1;
+		this.y1 = y1;
+		this.x2 = x2;
+		this.y2 = y2;
+	}
+
+	draw(ctx) {
+		ctx.beginPath();
+		ctx.strokeStyle = this.colour;
+		ctx.lineWidth = this.width;
+		ctx.moveTo(this.x1, this.y1);
+		ctx.lineTo(this.x2, this.y2);
+		ctx.stroke();
+	}
+}
+
+class Circle extends Shape {
+	constructor(colour = 'black', width = 2, x, y, radius) {
+		super(colour, width);
+		this.x = x;
+		this.y = y;
+		this.radius = radius;
+	}
+
+	draw(ctx) {
+		ctx.beginPath();
+		ctx.strokeStyle = this.colour;
+		ctx.lineWidth = this.width;
+		ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+		ctx.stroke();
+	}
+}
+
+class Rectangle extends Shape {
+	constructor(colour = 'black', width = 2, x, y, w, h) {
+		super(colour, width);
+		this.x = x;
+		this.y = y;
+		this.w = w;
+		this.h = h;
+	}
+
+	draw(ctx) {
+		ctx.beginPath();
+		ctx.strokeStyle = this.colour;
+		ctx.lineWidth = this.width;
+		ctx.strokeRect(this.x, this.y, this.w, this.h);
+	}
+}
+
+class Scene {
+	constructor(renderer) {
+		this.renderer = renderer;
+		this.shapes = [];
+	}
+
+	add(shape) {
+		this.shapes.push(shape);
+	}
+
+	draw() {
+		this.renderer.clear();
+		for (const shape of this.shapes) {
+			this.renderer.draw(shape);
+		}
+	}
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+	const canvas = document.getElementById('canvas');
+	const renderer = new Renderer(canvas);
+	const scene = new Scene(renderer);
+
+	scene.add(new Line(50, 50, 200, 200, 'blue', 3));
+	scene.add(new Circle(300, 150, 40, 'red', 4));
+	scene.add(new Rectangle(100, 250, 150, 80, 'green', 3));
+
+	scene.draw();
+});
