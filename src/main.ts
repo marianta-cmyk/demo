@@ -137,24 +137,41 @@ document.addEventListener('DOMContentLoaded', application);
 // ----------------------
 // Main Shape class
 class Shape {
-	constructor(colour = 'black', width = 2) {
-		this.colour = colour;
-		this.width = width;
+	colour: string;
+	width: number;
+	constructor(params?: { colour?: string; width?: number }) {
+		this.colour =
+			params?.colour === null || params?.colour === undefined
+				? 'black'
+				: params.colour; // params.colour ?? 'black';
+		this.width = params?.width ? params.width : 2; // params.width || 2;
 	}
-
-	draw(ctx) {}
+	draw(ctx: CanvasRenderingContext2D) {}
 }
 
 class Line extends Shape {
-	constructor(colour = 'black', width = 2, x1, y1, x2, y2) {
-		super(colour, width);
+	x1: number;
+	y1: number;
+	x2: number;
+	y2: number;
+	constructor(
+		x1: number,
+		y1: number,
+		x2: number,
+		y2: number,
+		params?: {
+			width?: number;
+			colour?: string;
+		},
+	) {
+		super(params);
 		this.x1 = x1;
 		this.y1 = y1;
 		this.x2 = x2;
 		this.y2 = y2;
 	}
 
-	draw(ctx) {
+	draw(ctx: CanvasRenderingContext2D) {
 		ctx.beginPath();
 		ctx.strokeStyle = this.colour;
 		ctx.lineWidth = this.width;
@@ -165,14 +182,25 @@ class Line extends Shape {
 }
 
 class Circle extends Shape {
-	constructor(colour = 'black', width = 2, x, y, radius) {
-		super(colour, width);
+	x: number;
+	y: number;
+	radius: number;
+	constructor(
+		x: number,
+		y: number,
+		radius: number,
+		params?: {
+			width?: number;
+			colour?: string;
+		},
+	) {
+		super(params);
 		this.x = x;
 		this.y = y;
 		this.radius = radius;
 	}
 
-	draw(ctx) {
+	draw(ctx: CanvasRenderingContext2D) {
 		ctx.beginPath();
 		ctx.strokeStyle = this.colour;
 		ctx.lineWidth = this.width;
@@ -182,15 +210,25 @@ class Circle extends Shape {
 }
 
 class Rectangle extends Shape {
-	constructor(colour = 'black', width = 2, x, y, w, h) {
-		super(colour, width);
+	x: number;
+	y: number;
+	w: number;
+	h: number;
+	constructor(
+		x: number,
+		y: number,
+		w: number,
+		h: number,
+		params?: { colour?: string; width?: number },
+	) {
+		super(params);
 		this.x = x;
 		this.y = y;
 		this.w = w;
 		this.h = h;
 	}
 
-	draw(ctx) {
+	draw(ctx: CanvasRenderingContext2D) {
 		ctx.beginPath();
 		ctx.strokeStyle = this.colour;
 		ctx.lineWidth = this.width;
@@ -199,12 +237,14 @@ class Rectangle extends Shape {
 }
 
 class Scene {
-	constructor(renderer) {
+	renderer: Renderer;
+	shapes: Shape[];
+	constructor(renderer: Renderer) {
 		this.renderer = renderer;
 		this.shapes = [];
 	}
 
-	add(shape) {
+	add(shape: Shape) {
 		this.shapes.push(shape);
 	}
 
@@ -218,12 +258,34 @@ class Scene {
 
 document.addEventListener('DOMContentLoaded', () => {
 	const canvas = document.getElementById('canvas');
+	if (!(canvas instanceof HTMLCanvasElement)) {
+		throw new Error('Canvas element not found');
+	}
 	const renderer = new Renderer(canvas);
 	const scene = new Scene(renderer);
 
-	scene.add(new Line(50, 50, 200, 200, 'blue', 3));
-	scene.add(new Circle(300, 150, 40, 'red', 4));
-	scene.add(new Rectangle(100, 250, 150, 80, 'green', 3));
+	scene.add(new Line(50, 50, 200, 200, { colour: 'blue', width: 3 }));
+	scene.add(new Circle(300, 150, 40, { colour: 'red' }));
+	scene.add(new Rectangle(100, 250, 150, 80, { width: 4 }));
 
 	scene.draw();
 });
+
+class Renderer {
+	canvas: HTMLElement;
+	ctx: CanvasRenderingContext2D;
+	constructor(canvas: HTMLCanvasElement) {
+		this.canvas = canvas;
+		const ctx = canvas.getContext('2d');
+		if (!ctx) {
+			throw new Error('Failed to get 2D context');
+		}
+		this.ctx = ctx;
+	}
+	clear() {
+		// this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+	}
+	draw(shape: Shape) {
+		shape.draw(this.ctx);
+	}
+}
