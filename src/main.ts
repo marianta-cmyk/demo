@@ -1,3 +1,5 @@
+import { Circle, Line, Rectangle, Renderer, Scene } from './shape.js';
+import type { Position } from './types.js';
 import { useAnimationFrame } from './use-animation-frame.js';
 import { useResizeObserver } from './use-resize-observer.js';
 
@@ -134,128 +136,6 @@ function application() {
 }
 document.addEventListener('DOMContentLoaded', application);
 
-// ----------------------
-// Main Shape class
-class Shape {
-	colour: string;
-	width: number;
-	constructor(params?: { colour?: string; width?: number }) {
-		this.colour =
-			params?.colour === null || params?.colour === undefined
-				? 'black'
-				: params.colour; // params.colour ?? 'black';
-		this.width = params?.width ? params.width : 2; // params.width || 2;
-	}
-	draw(ctx: CanvasRenderingContext2D) {}
-}
-
-class Line extends Shape {
-	x1: number;
-	y1: number;
-	x2: number;
-	y2: number;
-	constructor(
-		x1: number,
-		y1: number,
-		x2: number,
-		y2: number,
-		params?: {
-			width?: number;
-			colour?: string;
-		},
-	) {
-		super(params);
-		this.x1 = x1;
-		this.y1 = y1;
-		this.x2 = x2;
-		this.y2 = y2;
-	}
-
-	draw(ctx: CanvasRenderingContext2D) {
-		ctx.beginPath();
-		ctx.strokeStyle = this.colour;
-		ctx.lineWidth = this.width;
-		ctx.moveTo(this.x1, this.y1);
-		ctx.lineTo(this.x2, this.y2);
-		ctx.stroke();
-	}
-}
-
-class Circle extends Shape {
-	x: number;
-	y: number;
-	radius: number;
-	constructor(
-		x: number,
-		y: number,
-		radius: number,
-		params?: {
-			width?: number;
-			colour?: string;
-		},
-	) {
-		super(params);
-		this.x = x;
-		this.y = y;
-		this.radius = radius;
-	}
-
-	draw(ctx: CanvasRenderingContext2D) {
-		ctx.beginPath();
-		ctx.strokeStyle = this.colour;
-		ctx.lineWidth = this.width;
-		ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-		ctx.stroke();
-	}
-}
-
-class Rectangle extends Shape {
-	x: number;
-	y: number;
-	w: number;
-	h: number;
-	constructor(
-		x: number,
-		y: number,
-		w: number,
-		h: number,
-		params?: { colour?: string; width?: number },
-	) {
-		super(params);
-		this.x = x;
-		this.y = y;
-		this.w = w;
-		this.h = h;
-	}
-
-	draw(ctx: CanvasRenderingContext2D) {
-		ctx.beginPath();
-		ctx.strokeStyle = this.colour;
-		ctx.lineWidth = this.width;
-		ctx.strokeRect(this.x, this.y, this.w, this.h);
-	}
-}
-
-class Scene {
-	renderer: Renderer;
-	shapes: Shape[];
-	constructor(renderer: Renderer) {
-		this.renderer = renderer;
-		this.shapes = [];
-	}
-
-	add(shape: Shape) {
-		this.shapes.push(shape);
-	}
-
-	draw() {
-		this.renderer.clear();
-		for (const shape of this.shapes) {
-			this.renderer.draw(shape);
-		}
-	}
-}
-
 document.addEventListener('DOMContentLoaded', () => {
 	const canvas = document.getElementById('canvas');
 	if (!(canvas instanceof HTMLCanvasElement)) {
@@ -263,29 +143,34 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 	const renderer = new Renderer(canvas);
 	const scene = new Scene(renderer);
-
-	scene.add(new Line(50, 50, 200, 200, { colour: 'blue', width: 3 }));
-	scene.add(new Circle(300, 150, 40, { colour: 'red' }));
-	scene.add(new Rectangle(100, 250, 150, 80, { width: 4 }));
-
+	scene.add(
+		new Line({
+			source: {
+				x: 50,
+				y: 50,
+			},
+			target: {
+				x: 200,
+				y: 200,
+			},
+			colour: 'blue',
+			width: 3,
+		}),
+	);
+	scene.add(
+		new Circle({
+			radius: 40,
+			center: { x: 300, y: 150 },
+			colour: 'red',
+		}),
+	);
+	scene.add(
+		new Rectangle({
+			topleft: { x: 100, y: 250 },
+			w: 150,
+			h: 80,
+			width: 4,
+		}),
+	);
 	scene.draw();
 });
-
-class Renderer {
-	canvas: HTMLElement;
-	ctx: CanvasRenderingContext2D;
-	constructor(canvas: HTMLCanvasElement) {
-		this.canvas = canvas;
-		const ctx = canvas.getContext('2d');
-		if (!ctx) {
-			throw new Error('Failed to get 2D context');
-		}
-		this.ctx = ctx;
-	}
-	clear() {
-		// this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-	}
-	draw(shape: Shape) {
-		shape.draw(this.ctx);
-	}
-}
